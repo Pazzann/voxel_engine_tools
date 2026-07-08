@@ -14,12 +14,12 @@ namespace VoxelEngine {
         template<typename TId = uint16_t>
         class Chunk {
         private:
-            int size_z;
-            int size_x;
-            int size_y;
+            const int size_z;
+            const int size_x;
+            const int size_y;
             std::unique_ptr<Voxel<TId>[]> voxelList;
 
-            const int _coordsToIndex(int x, int y, int z){
+            const int _coordsToIndex(int x, int y, int z) const{
                 return size_x * size_y * z + size_x *y + x;
             }
         public:
