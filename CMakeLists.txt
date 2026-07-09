@@ -3,7 +3,8 @@ project(voxel_engine_tools)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_library(voxel_engine_tools SHARED Core/Voxel/Voxel.cpp
+set(VOXEL_ENGINE_SOURCES
+        Core/Voxel/Voxel.cpp
         Core/Chunk.h
         Core/Chunk.cpp
         Core/World.cpp
@@ -15,4 +16,15 @@ add_library(voxel_engine_tools SHARED Core/Voxel/Voxel.cpp
         Core/Voxel/VoxelRegistry.cpp
         Core/Voxel/VoxelRegistry.h
         Core/MeshBuilder.h
-        Core/MeshBuilder.cpp)
+        Core/MeshBuilder.cpp
+        API/WorldAPI.cpp
+        API/WorldAPI.h
+        API/GeneralAPI.cpp
+        API/GeneralAPI.h)
+
+# Big variant: 2-byte voxel id, up to 65536 unique voxel definitions.
+add_library(voxel_engine_tools_big SHARED ${VOXEL_ENGINE_SOURCES})
+
+# Small variant: 1-byte voxel id, up to 256 unique voxel definitions.
+add_library(voxel_engine_tools_small SHARED ${VOXEL_ENGINE_SOURCES})
+target_compile_definitions(voxel_engine_tools_small PRIVATE VOXEL_SMALL_IDS)
