@@ -16,11 +16,6 @@ namespace VoxelEngine {
             std::string name;
         };
 
-        struct VoxelDefinition{
-            std::string tag;
-            std::unordered_map<std::string, float> properties;
-            std::vector<VoxelState> state;
-        };
 
         template<typename TId = uint16_t>
         struct Voxel{
@@ -28,24 +23,11 @@ namespace VoxelEngine {
             std::vector<std::variant<float, int, bool>> state;
         };
 
-        struct Property {
+        struct VoxelProperty {
             const char* name;
             float value;
         };
 
-        void register_definitions(const char* tag, Property* properties, int count);
-
-        template<typename TId = uint16_t>
-        class VoxelRegistry{
-        private:
-            std::map<TId, VoxelDefinition> registry;
-
-        public:
-            void Register(VoxelDefinition* voxelDefinition);
-
-            VoxelDefinition Get(TId id);
-            VoxelDefinition Get(std::string tag);
-        };
 
     }
 }

@@ -6,7 +6,9 @@
 #define VOXEL_ENGINE_TOOLS_CHUNK_H
 
 #include <memory>
-#include "Voxel.h"
+#include "Voxel/Voxel.h"
+#include "Utils/Cordinates.h"
+#include "Voxel/VoxelDefinition.h"
 
 namespace VoxelEngine {
     namespace Core {
@@ -14,23 +16,36 @@ namespace VoxelEngine {
         template<typename TId = uint16_t>
         class Chunk {
         private:
-            const int size_z;
-            const int size_x;
-            const int size_y;
+            const Coordinates size;
             std::unique_ptr<Voxel<TId>[]> voxelList;
 
-            const int _coordsToIndex(int x, int y, int z) const{
-                return size_x * size_y * z + size_x *y + x;
+            const int _coordsToIndex(Coordinates coords) const{
+                return size.x * size.y * coords.z + size.x *coords.y + coords.x;
             }
         public:
-            Chunk(int sx, int sy, int sz)
-                    : size_x(sx), size_y(sy), size_z(sz), voxelList(std::make_unique<Voxel<TId>[]>(sx * sy * sz)) {}
+            Chunk(Coordinates size)
+                    : size(size), voxelList(std::make_unique<Voxel<TId>[]>(size.x * size.y * size.z)) {}
 
-            Voxel<TId>& GetVoxel(int x, int y, int z) {
-                return voxelList[_coordsToIndex(x,y,z)];
+            Coordinates GetSize() const {
+                return size;
             }
-            const Voxel<TId>& GetVoxel(int x, int y, int z) const {
-                return voxelList[_coordsToIndex(x, y, z)];
+
+            Voxel<TId>& GetVoxel(Coordinates coords) {
+                return voxelList[_coordsToIndex(coords)];
+            }
+            const Voxel<TId>& GetVoxel(Coordinates coords) const {
+                return voxelList[_coordsToIndex(coords)];
+            }
+
+            Voxel<TId>& SetVoxel(Coordinates localCoords, TId id, const VoxelDefinition& definition){
+                Voxel<TId>& voxel = voxelList[_coordsToIndex(localCoords)];
+                voxel.id = id;
+                voxel.state.clear();
+                voxel.state.reserve(definition.state.size());
+                for (const auto& voxelState : definition.state) {
+                    voxel.state.push_back(voxelState.value);
+                }
+                return voxel;
             }
         };
 

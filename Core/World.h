@@ -6,11 +6,10 @@
 #define VOXEL_ENGINE_TOOLS_WORLD_H
 
 #include <cstdint>
-#include <tuple>
-#include <map>
 #include <memory>
 #include "Chunk.h"
-#include "Voxel.h"
+#include "Voxel/Voxel.h"
+#include "Voxel/VoxelRegistry.h"
 
 namespace VoxelEngine {
     namespace Core {
@@ -18,24 +17,47 @@ namespace VoxelEngine {
         template<typename TId = uint16_t>
         class World{
         private:
-            const int chunk_size_x;
-            const int chunk_size_y;
-            const int chunk_size_z;
+            const Coordinates chunk_size;
+            VoxelRegistry<TId> registry;
 
-            std::map<std::tuple<int,int,int>, std::unique_ptr<Chunk<TId>>> chunks;
 
-            const std::tuple<int,int,int> _voxelWorldCoordsToChunkCoords(int x, int y, int z) const;
+            std::unordered_map<Coordinates, std::unique_ptr<Chunk<TId>>> chunks;
+
         public:
+            World(Coordinates chunk_size): chunk_size(chunk_size){}
 
-            World(int chunk_size_x, int chunk_size_y, int chunk_size_z): chunk_size_x(chunk_size_x), chunk_size_y(chunk_size_y), chunk_size_z(chunk_size_z){
+            Voxel<TId>& GetVoxelFromWorldCoord(GlobalCoords globalCoords){
+                ConvertedCoords convertedCoords = globalCoords.ConvertToLocal(chunk_size);
+                return GetChunk(convertedCoords.chunkCoords).GetVoxel(convertedCoords.inChunkCoords);
+            };
 
+
+            TId PeekVoxelId(GlobalCoords globalCoords) const {
+                ConvertedCoords convertedCoords = globalCoords.ConvertToLocal(chunk_size);
+                auto it = chunks.find(convertedCoords.chunkCoords);
+                if (it == chunks.end()) {
+                    return 0;
+                }
+                return it->second->GetVoxel(convertedCoords.inChunkCoords).id;
             }
 
-            Voxel<TId>& GetVoxelFromWorldCoord(int x, int y, int z);
-            const Voxel<TId>& GetVoxelFromWorldCoord(int x, int y, int z) const;
+            Chunk<TId>& GetChunk(Coordinates chunkCoords){
+                auto [it, inserted] = chunks.try_emplace(chunkCoords, nullptr);
+                if (inserted) {
+                    it->second = std::make_unique<Chunk<TId>>(chunk_size);
+                }
+                return *(it->second);
+            }
 
-            Chunk<TId>& GetChunk(int x, int y, int z);
-            const Chunk<TId>& GetChunk(int x, int y, int z) const;
+            Voxel<TId>& SetVoxel(GlobalCoords globalCoords, TId id){
+                ConvertedCoords convertedCoords = globalCoords.ConvertToLocal(chunk_size);
+                return GetChunk(convertedCoords.chunkCoords).SetVoxel(convertedCoords.inChunkCoords, id, registry.Get(id));
+            }
+
+            TId Register(const VoxelDefinition& voxelDefinition){
+                return registry.Register(voxelDefinition);
+            };
+
         };
 
 
