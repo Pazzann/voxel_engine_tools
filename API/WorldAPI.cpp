@@ -6,10 +6,10 @@
 #include "GeneralAPI.h"
 
 
-int VoxelEngine::API::CreateWorld(int sizeX, int sizeY, int sizeZ) {
+int VoxelEngine::API::CreateWorld(VoxelEngine::Core::Coordinates chunkSize) {
     int handle = VoxelEngine::API::g_nextHandle++;
     VoxelEngine::API::g_worlds[handle] = std::make_unique<VoxelEngine::Core::World<VoxelEngine::API::VoxelIdType>>(
-            VoxelEngine::Core::Coordinates{sizeX, sizeY, sizeZ});
+            VoxelEngine::Core::Coordinates{chunkSize.x, chunkSize.y, chunkSize.z});
     return handle;
 }
 
