@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <memory>
 #include "../Core/World.h"
+#include "../Core/MeshBuilder.h"
 
 namespace VoxelEngine{
     namespace API{
@@ -21,6 +22,11 @@ namespace VoxelEngine{
 
         extern std::unordered_map<int, std::unique_ptr<VoxelEngine::Core::World<VoxelIdType>>> g_worlds;
         extern int g_nextHandle;
+
+        // Any number of meshes can be built and pending at once, each under its own handle — e.g. an
+        // edit that dirties several neighboring chunks can build all of them before any get collected.
+        extern std::unordered_map<int, VoxelEngine::Core::Mesh> g_pendingMeshes;
+        extern int g_nextMeshHandle;
 
     }
 }
