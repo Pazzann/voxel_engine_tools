@@ -22,8 +22,12 @@ namespace VoxelEngine {
             std::unordered_map<TId, VoxelDefinition> registry;
 
             //id 0 means air
-            TId next_id = 1;
+            TId next_id = 0;
         public:
+
+            VoxelRegistry(){
+                Register({"air", {}, {}});
+            }
 
             TId Register(const VoxelDefinition& voxelDefinition){
                 TId id = next_id;
