@@ -12,6 +12,7 @@
 #endif
 
 #include "../Core/Utils/Cordinates.h"
+#include "RegistryAPI.h"
 
 
 namespace VoxelEngine{

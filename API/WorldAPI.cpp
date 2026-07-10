@@ -15,7 +15,7 @@ int VoxelEngine::API::CreateWorld(VoxelEngine::Core::Coordinates chunkSize) {
     VoxelEngine::API::g_worlds[handle] = std::make_unique<VoxelEngine::Core::World<VoxelEngine::API::VoxelIdType>>(
             VoxelEngine::Core::Coordinates{chunkSize.x, chunkSize.y, chunkSize.z});
 
-    g_worlds[handle]->Register({"dirt", {}, {}});
+    VoxelEngine::API::GlobalRegistry.Register({"dirt", {}, {}});
 
     return handle;
 }
@@ -38,7 +38,9 @@ int VoxelEngine::API::SetVoxel(int worldId, VoxelEngine::Core::GlobalCoords glob
         return -1;
     }
     try {
-        it->second->SetVoxel(globalCoords, static_cast<VoxelIdType>(defId));
+        VoxelIdType id = static_cast<VoxelIdType>(defId);
+        const VoxelEngine::Core::VoxelDefinition& definition = GlobalRegistry.Get(id);
+        it->second->SetVoxel(globalCoords, id, definition);
         return 0;
     } catch (const std::exception&) {
         return -2;

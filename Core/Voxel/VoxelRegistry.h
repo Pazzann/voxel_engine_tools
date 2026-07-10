@@ -12,8 +12,6 @@
 namespace VoxelEngine {
     namespace Core {
 
-        void register_definitions(const char* tag, VoxelProperty* properties, int count);
-
 
 
         template<typename TId = uint16_t>

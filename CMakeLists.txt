@@ -20,15 +20,24 @@ set(VOXEL_ENGINE_SOURCES
         API/WorldAPI.cpp
         API/WorldAPI.h
         API/GeneralAPI.cpp
-        API/GeneralAPI.h)
+        API/GeneralAPI.h
+        API/RegistryAPI.cpp
+        API/RegistryAPI.h)
 
 # Where the C# wrapper project expects to find the native DLL. Adjust if your
 # checkout of the C# repo lives somewhere else.
 set(CSHARP_WRAPPER_LIB_DIR
         "C:/Users/manto/OneDrive/Documents/GitHub/voxel_engine_tools_csharp_wrapper/VoxelEngineTools/VoxelEngineTools/lib")
 
+# Statically link the MinGW/GCC runtime so the DLL has no external libgcc/libstdc++
+# dependencies — it must load standalone inside any host (Godot, Unity, Python), which
+# won't have MinGW's bin on PATH.
+add_compile_options(-static)
+add_link_options(-static -static-libgcc -static-libstdc++)
+
 # Big variant: 2-byte voxel id, up to 65536 unique voxel definitions.
-add_library(voxel_engine_tools_big SHARED ${VOXEL_ENGINE_SOURCES})
+add_library(voxel_engine_tools_big SHARED ${VOXEL_ENGINE_SOURCES}
+        )
 add_custom_command(TARGET voxel_engine_tools_big POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CSHARP_WRAPPER_LIB_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

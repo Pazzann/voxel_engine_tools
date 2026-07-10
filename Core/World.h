@@ -11,7 +11,8 @@
 #include <vector>
 #include "Chunk.h"
 #include "Voxel/Voxel.h"
-#include "Voxel/VoxelRegistry.h"
+#include "Voxel/VoxelDefinition.h"
+
 
 namespace VoxelEngine {
     namespace Core {
@@ -20,8 +21,6 @@ namespace VoxelEngine {
         class World{
         private:
             const Coordinates chunk_size;
-            VoxelRegistry<TId> registry;
-
 
             std::unordered_map<Coordinates, std::unique_ptr<Chunk<TId>>> chunks;
 
@@ -70,10 +69,9 @@ namespace VoxelEngine {
                 return *(it->second);
             }
 
-            Voxel<TId>& SetVoxel(GlobalCoords globalCoords, TId id){
-                // Resolve the definition first: if id was never registered this throws before any
-                // chunk gets created or marked dirty, so a failed edit leaves no side effects.
-                const VoxelDefinition& definition = registry.Get(id);
+            // The caller (API layer) resolves `definition` from the registry and passes it in —
+            // World stays a pure spatial store with no knowledge of the registry.
+            Voxel<TId>& SetVoxel(GlobalCoords globalCoords, TId id, const VoxelDefinition& definition){
                 ConvertedCoords convertedCoords = globalCoords.ConvertToLocal(chunk_size);
                 Voxel<TId>& voxel = GetChunk(convertedCoords.chunkCoords).SetVoxel(convertedCoords.inChunkCoords, id, definition);
                 markDirtyWithNeighbors(convertedCoords.chunkCoords, convertedCoords.inChunkCoords);
@@ -87,10 +85,6 @@ namespace VoxelEngine {
             void ClearChunkDirty(Coordinates chunkCoords){
                 dirtyChunks.erase(chunkCoords);
             }
-
-            TId Register(const VoxelDefinition& voxelDefinition){
-                return registry.Register(voxelDefinition);
-            };
 
         };
 
