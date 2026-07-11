@@ -27,6 +27,9 @@ namespace VoxelEngine{
         VOXEL_API int SetVoxel(int worldId, Core::GlobalCoords globalCoords, int defId);
 
 
+        VOXEL_API int SetVoxels(int worldId, int count, Core::GlobalCoords* coords, int defId);
+
+
         // Number of chunks whose mesh is currently stale, or -1 if worldId is invalid. Call this to
         // size the array you pass to GetDirtyChunks.
         VOXEL_API int GetDirtyChunkCount(int worldId);

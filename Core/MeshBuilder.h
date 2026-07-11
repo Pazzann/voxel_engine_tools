@@ -105,11 +105,11 @@ namespace VoxelEngine {
                                 mesh.uvs.push_back(0.0f); mesh.uvs.push_back(1.0f);
 
                                 mesh.indices.push_back(baseIndex + 0);
+                                mesh.indices.push_back(baseIndex + 2);
                                 mesh.indices.push_back(baseIndex + 1);
-                                mesh.indices.push_back(baseIndex + 2);
                                 mesh.indices.push_back(baseIndex + 0);
-                                mesh.indices.push_back(baseIndex + 2);
                                 mesh.indices.push_back(baseIndex + 3);
+                                mesh.indices.push_back(baseIndex + 2);
                             }
                         }
                     }

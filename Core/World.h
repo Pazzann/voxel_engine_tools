@@ -12,6 +12,7 @@
 #include "Chunk.h"
 #include "Voxel/Voxel.h"
 #include "Voxel/VoxelDefinition.h"
+#include <climits>
 
 
 namespace VoxelEngine {
@@ -73,9 +74,26 @@ namespace VoxelEngine {
             // World stays a pure spatial store with no knowledge of the registry.
             Voxel<TId>& SetVoxel(GlobalCoords globalCoords, TId id, const VoxelDefinition& definition){
                 ConvertedCoords convertedCoords = globalCoords.ConvertToLocal(chunk_size);
+
                 Voxel<TId>& voxel = GetChunk(convertedCoords.chunkCoords).SetVoxel(convertedCoords.inChunkCoords, id, definition);
                 markDirtyWithNeighbors(convertedCoords.chunkCoords, convertedCoords.inChunkCoords);
                 return voxel;
+            }
+
+            void SetVoxels(GlobalCoords* coordsArrays, const VoxelDefinition& def, int count, TId defId){
+                Coordinates lastChunkCoord = { INT_MIN, INT_MIN, INT_MIN };
+                Chunk<TId>* current = nullptr;
+                for (int i = 0; i < count; i++){
+                    ConvertedCoords convertedCoords = coordsArrays[i].ConvertToLocal(chunk_size);
+                    if (convertedCoords.chunkCoords != lastChunkCoord){
+                        current = &GetChunk(convertedCoords.chunkCoords);
+                        markDirtyWithNeighbors(convertedCoords.chunkCoords, convertedCoords.inChunkCoords);
+                        lastChunkCoord = convertedCoords.chunkCoords;
+                    }
+
+                    current->SetVoxel(convertedCoords.inChunkCoords, defId, def);
+
+                }
             }
 
             const std::unordered_set<Coordinates>& GetDirtyChunks() const {

@@ -7,6 +7,7 @@
 #include "../Core/MeshBuilder.h"
 #include <exception>
 #include <cstring>
+#include <set>
 
 
 
@@ -45,6 +46,24 @@ int VoxelEngine::API::SetVoxel(int worldId, VoxelEngine::Core::GlobalCoords glob
     } catch (const std::exception&) {
         return -2;
     }
+}
+
+int VoxelEngine::API::SetVoxels(int worldId, int count, VoxelEngine::Core::GlobalCoords *coords, int defId) {
+    auto it = g_worlds.find(worldId);
+    if (it == g_worlds.end()) {
+        return -1;
+    }
+
+    try {
+        VoxelIdType id = static_cast<VoxelIdType>(defId);
+        const VoxelEngine::Core::VoxelDefinition& definition = GlobalRegistry.Get(id);
+        it->second->SetVoxels(coords, definition, count, defId );
+
+        return 0;
+    } catch (const std::exception&){
+        return -2;
+    }
+
 }
 
 int VoxelEngine::API::GetDirtyChunkCount(int worldId) {
