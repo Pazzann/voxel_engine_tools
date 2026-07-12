@@ -8,27 +8,27 @@
 #include <variant>
 #include <vector>
 
-namespace VoxelEngine {
-    namespace Core{
 
-        struct VoxelState{
-            std::variant<float, int, bool> value;
-            std::string name;
-        };
+namespace VoxelEngine::Core {
 
-
-        template<typename TId = uint16_t>
-        struct Voxel{
-            TId id;
-            std::vector<std::variant<float, int, bool>> state;
-        };
-
-        struct VoxelProperty {
-            const char* name;
-            float value;
-        };
+    struct VoxelState {
+        std::variant<float, int, bool> value;
+        std::string name;
+    };
 
 
-    }
+    template<typename TId = uint16_t>
+    struct Voxel {
+        TId id;
+        std::vector<std::variant<float, int, bool>> state;
+    };
+
+    struct VoxelProperty {
+        const char *name;
+        float value;
+    };
+
+
 }
+
 #endif //VOXEL_ENGINE_TOOLS_VOXEL_H

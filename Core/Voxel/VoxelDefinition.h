@@ -10,16 +10,14 @@
 #include <vector>
 #include "Voxel.h"
 
-namespace VoxelEngine{
-    namespace Core{
-        struct VoxelDefinition{
-            std::string tag;
-            std::unordered_map<std::string, float> properties;
-            std::vector<VoxelState> state;
-        };
-    }
-}
 
+namespace VoxelEngine::Core {
+    struct VoxelDefinition {
+        std::string tag;
+        std::unordered_map<std::string, float> properties;
+        std::vector<VoxelState> state;
+    };
+}
 
 
 #endif //VOXEL_ENGINE_TOOLS_VOXELDEFINITION_H

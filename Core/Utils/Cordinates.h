@@ -9,38 +9,39 @@
 #include <cstddef>
 #include <functional>
 
-namespace VoxelEngine {
-    namespace Core {
 
-        struct ConvertedCoords;
+namespace VoxelEngine::Core {
 
-        struct Coordinates {
-            int x, y, z;
-            auto operator<=>(const Coordinates&) const = default;
-        };
+    struct ConvertedCoords;
 
-        struct GlobalCoords : Coordinates{
-            // Floor division/modulo per axis (not truncating like raw / and %),
-            // so negative coordinates split into a valid chunk index + in-range local coordinate.
-            [[nodiscard]] ConvertedCoords ConvertToLocal(const Coordinates& divisor) const;
-        };
+    struct Coordinates {
+        int x, y, z;
+
+        auto operator<=>(const Coordinates &) const = default;
+    };
+
+    struct GlobalCoords : Coordinates {
+        // Floor division/modulo per axis (not truncating like raw / and %),
+        // so negative coordinates split into a valid chunk index + in-range local coordinate.
+        [[nodiscard]] ConvertedCoords ConvertToLocal(const Coordinates &divisor) const;
+    };
 
 
-        struct ConvertedCoords {
-            Coordinates chunkCoords;
-            Coordinates inChunkCoords;
+    struct ConvertedCoords {
+        Coordinates chunkCoords;
+        Coordinates inChunkCoords;
 
-            [[nodiscard]] GlobalCoords ConvertToGlobal(const Coordinates& divisor) const;
-        };
+        [[nodiscard]] GlobalCoords ConvertToGlobal(const Coordinates &divisor) const;
+    };
 
-    }
 }
+
 
 template<>
 struct std::hash<VoxelEngine::Core::Coordinates> {
-    std::size_t operator()(const VoxelEngine::Core::Coordinates& c) const noexcept {
+    std::size_t operator()(const VoxelEngine::Core::Coordinates &c) const noexcept {
         std::size_t seed = 0;
-        for (int value : {c.x, c.y, c.z}) {
+        for (int value: {c.x, c.y, c.z}) {
             seed ^= std::hash<int>{}(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
         return seed;

@@ -4,7 +4,7 @@
 
 #include "WorldAPI.h"
 #include "GeneralAPI.h"
-#include "../Core/MeshBuilder.h"
+#include "../Utils/MeshBuilder.h"
 #include <exception>
 #include <cstring>
 #include <set>
@@ -96,7 +96,7 @@ int VoxelEngine::API::BuildChunkMesh(int worldId, VoxelEngine::Core::Coordinates
 
     auto& world = *(it->second);
     auto& chunk = world.GetChunk(chunkCoords);
-    VoxelEngine::Core::Mesh mesh = VoxelEngine::Core::MeshBuilder::CreateMeshFromChunkNaive(chunk, world, chunkCoords);
+    VoxelEngine::Utils::Mesh mesh = VoxelEngine::Utils::MeshBuilder::CreateMeshFromChunkNaive(chunk, world, chunkCoords);
     world.ClearChunkDirty(chunkCoords);
 
     *outVertexCount = static_cast<int>(mesh.positions.size() / 3);

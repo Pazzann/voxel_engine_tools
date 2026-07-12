@@ -8,6 +8,6 @@
 std::unordered_map<int, std::unique_ptr<VoxelEngine::Core::World<VoxelEngine::API::VoxelIdType>>> VoxelEngine::API::g_worlds;
 int VoxelEngine::API::g_nextHandle = 1;
 
-std::unordered_map<int, VoxelEngine::Core::Mesh> VoxelEngine::API::g_pendingMeshes;
+std::unordered_map<int, VoxelEngine::Utils::Mesh> VoxelEngine::API::g_pendingMeshes;
 int VoxelEngine::API::g_nextMeshHandle = 1;
 

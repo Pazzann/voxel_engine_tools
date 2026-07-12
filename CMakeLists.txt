@@ -15,8 +15,8 @@ set(VOXEL_ENGINE_SOURCES
         Core/Voxel/VoxelDefinition.h
         Core/Voxel/VoxelRegistry.cpp
         Core/Voxel/VoxelRegistry.h
-        Core/MeshBuilder.h
-        Core/MeshBuilder.cpp
+        Utils/MeshBuilder.h
+        Utils/MeshBuilder.cpp
         API/WorldAPI.cpp
         API/WorldAPI.h
         API/GeneralAPI.cpp
@@ -37,7 +37,11 @@ add_link_options(-static -static-libgcc -static-libstdc++)
 
 # Big variant: 2-byte voxel id, up to 65536 unique voxel definitions.
 add_library(voxel_engine_tools_big SHARED ${VOXEL_ENGINE_SOURCES}
-        )
+        Utils/Raycast.cpp
+        Utils/Raycast.h
+        API/UtilsAPI.cpp
+        API/UtilsAPI.h
+)
 add_custom_command(TARGET voxel_engine_tools_big POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CSHARP_WRAPPER_LIB_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

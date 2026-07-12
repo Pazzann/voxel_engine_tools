@@ -8,14 +8,12 @@
 #include "../Core/Voxel/VoxelRegistry.h"
 #include "GeneralAPI.h"
 
-namespace VoxelEngine{
-    namespace API{
 
-         extern Core::VoxelRegistry<VoxelIdType> GlobalRegistry;
+namespace VoxelEngine::API {
 
-    }
+    extern Core::VoxelRegistry<VoxelIdType> GlobalRegistry;
+
 }
-
 
 
 #endif //VOXEL_ENGINE_TOOLS_REGISTRYAPI_H
